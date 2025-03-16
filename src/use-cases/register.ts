@@ -2,34 +2,55 @@ import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 
 
+
 interface RegisterUseCaseRequest {
     name: string;
     email: string;
     password: string;
 }
 
+export class RegisterUseCase {
 
+    
 
-
-
-export function registerUseCase ({name, email, password}: RegisterUseCaseRequest)  {
-    const password_hash = await hash(password, 6);
-
-    const userWithSameEmail = await prisma.user.findUnique({
-        where: {
-            email,
-        },
-    });
-
-    if (userWithSameEmail) {
-        throw new Error("User with this email already exists");
+    constructor(
+       private userRepository: any,
+    ) {
     }
 
-    await prisma.user.create({
-        data: {
+
+
+
+    async execute({ name, email, password }: RegisterUseCaseRequest) {
+        const password_hash = await hash(password, 6);
+
+        const userWithSameEmail = await prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+
+        if (userWithSameEmail) {
+            throw new Error("User with this email already exists");
+        }
+
+       
+
+         await this.userRepository.create({
             name,
             email,
             password_hash,
-        },
-    });
+        });
+    }
 }
+
+
+
+
+    
+
+
+
+// SOLID
+
+// D - Dependency Inversion Principle
