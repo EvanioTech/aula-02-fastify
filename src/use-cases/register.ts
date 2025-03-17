@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { UserRepository } from "@/repositories/users-repository";
+import { User } from "@prisma/client";
 import { hash } from "bcryptjs";
 
 
@@ -14,7 +16,7 @@ export class RegisterUseCase {
     
 
     constructor(
-       private userRepository: any,
+       private userRepository: UserRepository,
     ) {
     }
 
