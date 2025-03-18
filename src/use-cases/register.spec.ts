@@ -2,43 +2,51 @@
 import {expect, describe, it} from 'vitest'
 import { RegisterUseCase } from './register';
 import { compare } from 'bcryptjs';
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository';
+import { register } from 'module';
+import { UserAlreadyExistsError } from './errors/user-already-exists-error';
 
 
 describe('register', () => {
     it('should hash the password', async () => {
     
+        const usersRepository = new InMemoryUsersRepository()
 
-        const registerUserCase = new RegisterUseCase({
+        const registerUserCase = new RegisterUseCase(usersRepository)
 
-            async findByEmail(email) {
-                return null;
-            },
-            async create(data) {
-                return {
-                    id: 'user-1',
-                    name: data.name,
-                    email: data.email,
-                    password_hash: data.password_hash,  
-                    created_at: new Date(),
-                    
+        const email = 'jon@example.com'
 
-                }
-
-            },
-        });
-        const { user } = await registerUserCase.execute({
+        
+        await registerUserCase.execute({
             name: 'John Doe',
-            email: 'jasg@kdhf.com',
+            email,
             password: '123456'
         });
 
-        const isPasswordHashed = await compare(
-            '123456',
-            user.password_hash
-        )
-
-        expect(isPasswordHashed).toBe(true)
+        await expect(()=>
+        registerUserCase.execute({
+            name: 'John Doe',
+            email,
+        password: '123456',
+        }),
+    ).rejects.toBeInstanceOf(UserAlreadyExistsError)
 
     })
 }
 )
+
+it('should hash the register', async () => {
+
+    const usersRepository = new InMemoryUsersRepository()
+
+    const registerUserCase = new RegisterUseCase(usersRepository)
+
+    const {user} = await registerUserCase.execute({
+        name: 'John Doe',
+        email: 'jon@example.com',
+        password: '123456',
+    });
+
+    expect(user.id).toEqual(expect.any(String))
+
+})

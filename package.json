@@ -8,7 +8,14 @@
     "build": "tsup src --out-dir build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prisma": "npx prisma studio"
+    "test:coverage": "vitest --coverage",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "prisma:reset": "npx prisma migrate reset --force",
+    "prisma:seed": "npx prisma db seed --preview-feature",
+    "prisma:generate:watch": "npx prisma generate --watch",
+    "prisma:studio:dev": "npx prisma studio --experimental"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +24,7 @@
   "devDependencies": {
     "@prisma/client": "6.5.0",
     "@types/node": "^22.13.10",
+    "@vitest/coverage-v8": "3.0.9",
     "prisma": "6.5.0",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
