@@ -46,10 +46,8 @@ describe('Chek-in Use case', () => {
      const {checkIn } =   await sut.execute({
            gymId: 'gym-01',
            userId: 'user-01',
-           userLatitute: 0,
+           userLatitude: 0,
            userLongitude: 0,
-           gymLatitude: 0,
-           gymLongitude: 0,
         });
 
     
@@ -68,19 +66,17 @@ it('should not be able to check-in in twice in the same day', async () => {
      await sut.execute({
           gymId: 'gym-01',
           userId: 'user-01',
-          userLatitute: 0,
+          userLatitude: 0,
            userLongitude: 0,
-           gymLatitude: 0,
-           gymLongitude: 0,
+           
        });
        
      await expect(() => sut.execute({
         gymId: 'gym-01',
         userId: 'user-01',
-        userLatitute: 0,
+        userLatitude: 0,
            userLongitude: 0,
-           gymLatitude: 0,
-           gymLongitude: 0,
+           
      })).rejects.toBeInstanceOf(Error)
 
      
@@ -95,10 +91,9 @@ it('should  be able to check-in in twice but in different days', async () => {
      await sut.execute({
           gymId: 'gym-01',
           userId: 'user-01',
-          userLatitute: 0,
+          userLatitude: 0,
            userLongitude: 0,
-           gymLatitude: 0,
-           gymLongitude: 0,
+           
        });
 
            vi.setSystemTime(new Date('2021-01-02 10:00:00'))
@@ -106,10 +101,9 @@ it('should  be able to check-in in twice but in different days', async () => {
     const {checkIn } = await sut.execute({
         gymId: 'gym-01',
         userId: 'user-01',
-        userLatitute: 0,
+        userLatitude: 0,
            userLongitude: 0,
-           gymLatitude: 0,
-           gymLongitude: 0,
+           
      })
 
      expect(checkIn.id).toEqual(expect.any(String))
@@ -119,7 +113,32 @@ it('should  be able to check-in in twice but in different days', async () => {
 
 })
 
+it('should not be able to check-in on distant gym', async () => {
 
+     
+     vi.setSystemTime(new Date('2021-01-01 10:00:00'))
 
+     gymsRepository.items.push({
+          id: 'gym-02',
+          title: 'Academia 02',
+          description: 'birl',
+          phone: '',
+          latitude: new Decimal(-3.8744272),
+          longitude: new Decimal(-38.5017396),
+          createdAt: new Date(),
+    })
+    
+       
+     await expect(()=>
+      sut.execute({
+           gymId: 'gym-02',
+           userId: 'user-01',
+           userLatitude: -3.71722,
+           userLongitude: -38.5431,
+           
+        })
+     ).rejects.toBeInstanceOf(Error)
+
+     })
 
 })
