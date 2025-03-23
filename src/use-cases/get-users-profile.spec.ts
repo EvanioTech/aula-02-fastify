@@ -11,7 +11,7 @@ let sut : GetUserProfileUseCase;
 
 describe('Get User profile Use case', () => {
 
-    beforeEach(() => {
+    beforeEach(async () => {
          usersRepository = new InMemoryUsersRepository()
 
          sut = new GetUserProfileUseCase(usersRepository)
@@ -40,7 +40,7 @@ it('should not be able to get user profile with wrong id', async () => {
     
    
 
-    expect(() => sut.execute({
+   await expect(() => sut.execute({
             userId: 'wrong-id',
     }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
