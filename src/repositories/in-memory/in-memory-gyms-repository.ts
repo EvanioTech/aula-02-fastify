@@ -12,11 +12,15 @@ export  class InMemoryGymsRepository implements GymsRepository {
      id: string; title: string; description: string | null; 
      phone: string | null; latitude: Decimal; 
      longitude: Decimal; createdAt: Date; } | null> {
-        console.log("Buscando academia com ID:", id);
-    console.log("Academias disponíveis:", this.items);
     const gym = this.items.find((item) => item.id === id);
     return gym ?? null;
   }
+
+  async searchMany(query: string, page: number) {
+    return this.items.filter(
+        (item) => item.title.includes(query)).slice((page - 1) * 20 , page * 20)
+    ;
+}
 
     
 
